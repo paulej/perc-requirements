@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rfc SYSTEM 'rfc2629.dtd' []>
+<rfc ipr="trust200902" category="info" docName="draft-jones-perc-private-media-reqts-01">
+<?rfc toc="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+<?rfc private=""?>
+<?rfc topblock="yes"?>
+<?rfc comments="no"?>
+<front>
+<title abbrev="PERC Requirements">Private Media Requirements in Privacy Enhanced RTP Conferencing</title>
+
+<author initials="P." surname="Jones" fullname="Paul Jones">
+<organization>Cisco</organization>
+<address>
+<postal>
+<street>7025 Kit Creek Rd.</street>
+<city>Research Trianle Park</city>
+<code>27709</code>
+<country>USA</country>
+<region>North Carolina</region>
+</postal>
+<phone>+1 919 476 2048</phone>
+<email>paulej@packetizer.com</email>
+<uri></uri>
+</address>
+</author>
+<author initials="N." surname="Ismail" fullname="Nermeen Ismail">
+<organization>Cisco</organization>
+<address>
+<postal>
+<street>170 W Tasman Dr.</street>
+<city>San Jose</city>
+<code>95134</code>
+<country>USA</country>
+<region>California</region>
+</postal>
+<phone></phone>
+<email>nermeen@cisco.com</email>
+<uri></uri>
+</address>
+</author>
+<author initials="D." surname="Benham" fullname="David Benham">
+<organization>Cisco</organization>
+<address>
+<postal>
+<street>170 W Tasman Dr.</street>
+<city>San Jose</city>
+<code>95134</code>
+<country>USA</country>
+<region>California</region>
+</postal>
+<phone></phone>
+<email>dbenham@cisco.com</email>
+<uri></uri>
+</address>
+</author>
+<author initials="N." surname="Buckles" fullname="Nathan Buckles">
+<organization>Cisco</organization>
+<address>
+<postal>
+<street>170 W Tasman Dr.</street>
+<city>San Jose</city>
+<code>95134</code>
+<country>USA</country>
+<region>California</region>
+</postal>
+<phone></phone>
+<email>nbuckles@cisco.com</email>
+<uri></uri>
+</address>
+</author>
+<author initials="J." surname="Mattsson" fullname="John Mattsson">
+<organization>Ericsson AB</organization>
+<address>
+<postal>
+<street>SE-164 80</street>
+<city>Stockholm</city>
+<code></code>
+<country>Sweeden</country>
+<region></region>
+</postal>
+<phone>+46 10 71 43 501</phone>
+<email>john.mattsson@ericsson.com</email>
+<uri></uri>
+</address>
+</author>
+<author initials="R." surname="Barnes" fullname="Richard Barnes">
+<organization>Mozilla</organization>
+<address>
+<postal>
+<street>331 E Evelyn Ave.</street>
+<city>Mountain View</city>
+<code>94041</code>
+<country>USA</country>
+<region>California</region>
+</postal>
+<phone></phone>
+<email>rlb@ipv.sx</email>
+<uri></uri>
+</address>
+</author>
+<date year="2015" month="October" day="15"/>
+
+<area>Internet</area>
+<workgroup></workgroup>
+<keyword>PERC</keyword>
+<keyword>RTP</keyword>
+<keyword>privacy</keyword>
+<keyword>conferencing</keyword>
+
+
+<abstract>
+<t>This document specifies the requirements for ensuring the privacy and integrity of real-time transport protocol (RTP) media flows between two or more endpoints communicating through one or more centrally located media distribution devices (MDDs).
+</t>
+</abstract>
+
+</front>
+
+<middle>
+
+<section anchor="introduction" title="Introduction">
+<t>Users of multimedia communication products and services have privacy expectations that are largely satisfied with the use of SRTP <xref target="RFC3711"/> and related technologies when communicating point-to-point over the Internet.  When two or more endpoints communicate through a traditional media server, it is necessary for those endpoints to share the SRTP master key and salt information with the traditional media server so that it can authenticate and decrypt received RTP and RTCP packets.  The key material is needed so that a traditional media server can perform various operations on the media, such as mixing, transcoding, and transrating.  The traditional media server also needs the master key and salt in order to transmit media packets to other endpoints in the conference.  The need for a traditional media server to have the master key represents a security risk.
+</t>
+<t>Within a corporate or other isolated environment where all conferencing resources, including both call control and media processing functions, are tightly controlled, this security risk can be effectively managed.  However, managing this risk is becoming increasing difficult as conferencing resources are deployed in networks that are not so strictly managed or controlled, including resources on virtualized servers deployed in third-party cloud environments.
+</t>
+<t>There are also existing public voice and video conferencing service providers in which users must place full trust by sharing media encryption keys in order to use those services.  This exposes corporations, for example, to a higher risk of being subjected to corporate espionage.  While it is not the intent of this draft to suggest that any existing service provider would permit or condone any illicit use of its service, the fact is that security threats can come from either internal or external sources and remain undiscovered for long periods of time.
+</t>
+<t>It is possible to ensure real-time transport protocol (RTP) media privacy in deployments using one or more centrally located media distribution devices (MDDs) with limited changes in the security mechanisms used today.  This document discusses this possibility in more detail and presents a set of requirements that are neutral with respect to session signaling protocols.
+</t>
+<t>This document is focused on ensuring the privacy of RTP media in centralized MDD models only.  Other types of media are out of scope.  Other, non-centralized media distribution models are also out of scope.
+</t>
+</section>
+
+<section anchor="requirements-language" title="Requirements Language">
+<t>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in RFC 2119 <xref target="RFC2119"/> when they appear in ALL CAPS.  These words may also appear in this document in lower case as plain English words, absent their normative meanings.
+</t>
+</section>
+
+<section anchor="terminology" title="Terminology">
+<t>Adversary:  An unauthorized entity that may attempt to compromise the performance of a media distribution device through various means, including, but not limited to, the transmission of bogus media packets or attempt to gain access to the plaintext of the media.
+</t>
+<t>Media content: The portion of the RTP (i.e., the encrypted RTP payload) or other packet containing the actual audio, video, or other multimedia information that is considered confidential and is subject to end-to-end encryption.  This does not include, for example, RTP headers, RTP header extensions, or RTCP packets.
+</t>
+<t>Switching media distribution device: A media distribution device (MDD) that does not decrypt RTP media flows or perform processing on the media payload, but instead simply forwards the received media from a sender to the other endpoints in a multimedia conference.  A switching media distribution device may modify some portion of the RTP header and may often consume and create RTCP messages for efficient media handling.
+</t>
+</section>
+
+<section anchor="background" title="Background">
+<t>Traditional media servers used for multimedia conferencing would mix, transcode, transrate, and/or recompose media flows from one or more conference participants' endpoints, sending out a different audio and video flow to each endpoint.  For audio, this might entail mixing some number of input flows that appear to contain audio intended to be heard by the other participants, with each endpoint receiving a flow that does not contain that participant's own audio.  For video, the traditional media server may elect to send only video showing the current active speaker, a tiled composition of all participants or the most recent active speakers, a video flow with the active speaker presented prominently with other participants presented as thumbnail images, or some other composite arrangement.  It is also common for audio or video to be transcoded.  A typical traditional media server is depicted in <xref target="fig-tms"/>.
+</t>
+
+<figure anchor="fig-tms" align="center" title="Traditional Media Server
+"><artwork align="center">
+               +-------------------+
++---+ --{A}--&gt; |                   | &lt;--{C}-- +---+
+| A |          | Media Composition |          | C |
++---+ &lt;-{BCD}- |                   | -{ABD}-&gt; +---+
+               |    Transcoders    |
++---+ --{B}--&gt; |    Transraters    | &lt;--{D}-- +---+
+| B |          |                   |          | D |
++---+ &lt;-{ACD}- |   Decrypt/Encrypt | -{ABC}-&gt; +---+
+               +-------------------+
+</artwork></figure>
+<t>Traditional media servers require a significant amount of processing power, which in turn translates into a high cost for conferencing hardware manufacturers.  Significantly, too, it is very difficult to deploy these servers in a cloud environment due to the high processing demands, as the specialized hardware found in the traditional media server does not exist in a cloud environment.
+</t>
+<t>To enable the traditional media server to perform its job, the server establishes one or more SRTP sessions with each of the conference endpoints wherein it is given access to the keys required to decrypt and encrypt media flows from and to each endpoint.  This means that the traditional media server is necessarily a fully trusted entity in the communication path.  Any time these servers are deployed in a network that is not secured, it increases the risk that an adversary might gain access to cryptographic key material, allowing the adversary to be able to see and listen to ongoing conferences.  In some instances, depending on how the hardware is designed and how keys and certificates are managed, it might be possible for an adversary to see and listen to previously recorded conferences or future conferences.
+</t>
+<t>The Secure Real-time Transport Protocol (SRTP) <xref target="RFC3711"/> is a profile of RTP, which can provide confidentiality, message authentication, and replay protection to the RTP traffic and to the RTP Control Protocol (RTCP).  Encryption of header extension in SRTP <xref target="RFC6904"/> provides a mechanism extending the mechanisms of <xref target="RFC3711"/>, to selectively encrypt RTP header extensions in SRTP.  <xref target="RFC3711"/> and <xref target="RFC6904"/> solves end-to-end use cases between two endpoints, and does not consider use cases where a sender delivers media to a receiver via a cloud-based conferencing service.
+</t>
+</section>
+
+<section anchor="motivation-for-private-media-using-switching-mdds" title="Motivation for Private Media using switching MDDs">
+
+<section anchor="switching-media-in-cloud-services" title="Switching Media in Cloud Services">
+<t>There is a trend in the industry for enterprises to use cloud services to host multi-party conferences and meet-me services, either exclusively or to meet peak loads on-demand.  At the same time, there is shift toward using lightweight, cost-effective switching MDDs in cloud services that do not necessarily need to mix audio or composite/transcode video.  Also fueling the use of such lightweight MDDs is the desire to fully exploit virtualized computing resources and dynamic scalability potential available in cloud computing environments.
+</t>
+<t>The increased use of cloud services has exposed a problem.  There are two different trust domains from a media perspective: endpoints and other devices in a trusted domain, and MDDs controlled by the cloud service in an untrusted domain.  Other examples of conference devices spread across trusted and untrusted domains are likely, but the cloud service trend is triggering the urgency to address the need to allow for lightweight media conference while enabling media privacy at the same time.
+</t>
+<t>With a switching MDD, each endpoint transmits media as it would with a traditional media server.  However, the switching MDD merely forwards all or a subset of the media to the other endpoints in the conference (where at least one other endpoint may be associated with a cascaded media distribution device), leaving composition to the receiving endpoint.  It is also worth noting that, for a switching MDD model to work successfully, each endpoint in the conference must support the media formats transmitted by all other endpoints in the conference.  More modern endpoints support multiple codecs and formats, making this commercially practical.
+</t>
+<t><xref target="fig-smdd"/> depicts an example of a switching MDD wherein each endpoint is receiving the media flows transmitted by each of the other endpoints in the conference.
+</t>
+
+<figure anchor="fig-smdd" align="center" title="Switching Media Distribution Device
+"><artwork align="center">
+               +--------------------+
++---+ --{A}--&gt; |                    | &lt;-{C}--- +---+
+| A | &lt;-{B}--- |   Switching MDD    | --{A}--&gt; | C |
+|   | &lt;-{C}--- |                    | --{B}--&gt; |   |
++---+ &lt;-{D}--- |                    | --{D}--&gt; +---+
+               |       Packet       |
++---+ --{B}--&gt; |   Authentication   | &lt;-{D}--- +---+
+| B | &lt;-{A}--- |                    | --{A}--&gt; | D |
+|   | &lt;-{C}--- |                    | --{B}--&gt; |   |
++---+ &lt;-{D}--- |   Media Privacy    | --{C}--&gt; +---+
+               +--------------------+
+</artwork></figure>
+<t>Note - The use of multiple arrows directed toward each endpoint is not intended to suggest the use of separate RTP sessions.
+</t>
+<t>By using methods such as those described in <xref target="RFC6464"/>, it is possible for the switching MDD to transmit the appropriate audio and video flows to endpoints without having knowledge of the content of the encrypted media.  The following &quot;Active Speaker Switching&quot; examples help illustrate this point.
+</t>
+<t>In <xref target="fig-ecas"/>, endpoints A, B and D receive the video streams from endpoint C, the currently active speaker, which is receiving video from endpoint A, the previous active speaker.  Later when endpoint B becomes the active speaker (<xref target="fig-ebas"/>), endpoints A, C and D will start to receive video from B, while endpoint B continues to receive video from endpoint C.  Finally in <xref target="fig-eaas"/>, endpoint A becomes the active speaker again.
+</t>
+
+<figure anchor="fig-ecas" align="center" title="Endpoint &quot;C&quot; is the Active Speaker
+"><artwork align="center">
+               +--------------------+ 
++---+ --{A}--&gt; |                    | &lt;--{C}-- +---+
+| A |          |   Switching MDD    |          | C |*
++---+ &lt;-{C}--- |                    | ---{A}-&gt; +---+
+               |                    |
++---+ --{B}--&gt; |                    | &lt;--{D}-- +---+
+| B |          |                    |          | D |
++---+ &lt;-{C}--- |                    | ---{C}-&gt; +---+
+               +--------------------+
+</artwork></figure>
+
+<figure anchor="fig-ebas" align="center" title="Endpoint &quot;B&quot; is the Active Speaker
+"><artwork align="center">
+                +--------------------+ 
+ +---+ --{A}--&gt; |                    | &lt;--{C}-- +---+
+ | A |          |   Switching MDD    |          | C |
+ +---+ &lt;-{B}--- |                    | ---{B}-&gt; +---+
+                |                    |
+ +---+ --{B}--&gt; |                    | &lt;--{D}-- +---+
+*| B |          |                    |          | D |
+ +---+ &lt;-{C}--- |                    | ---{B}-&gt; +---+
+                +--------------------+
+</artwork></figure>
+
+<figure anchor="fig-eaas" align="center" title="Endpoint &quot;A&quot; is the Active Speaker
+"><artwork align="center">
+                +--------------------+ 
+ +---+ --{A}--&gt; |                    | &lt;--{C}-- +---+
+*| A |          |   Switching MDD    |          | C |
+ +---+ &lt;-{B}--- |                    | ---{A}-&gt; +---+
+                |                    |
+ +---+ --{B}--&gt; |                    | &lt;--{D}-- +---+
+ | B |          |                    |          | D |
+ +---+ &lt;-{A}--- |                    | ---{A}-&gt; +---+
+                +--------------------+
+</artwork></figure>
+<t>Switched media can also enable conferences to scale to include many more endpoints simultaneously than would be possible with a traditional media server.  Like traditional media servers, switching MDDs can also be cascaded or interconnected in a meshed topology to increase the size of the conference without putting undue burden on any particular server.
+</t>
+</section>
+
+<section anchor="private-media-security-through-switching" title="Private Media Security through Switching">
+<t>A traditional media server, or MCU, establishes an SRTP session with each endpoint separately, and needs to decrypt packets containing media for presentation to other endpoints.  By using a switching MDD, it is possible to keep the media encryption keys private to the endpoints such that the MDD does not have access to the keys used for media encryption.  The switching MDD just forwards media received to each of the other endpoints in the conference.
+</t>
+<t>This provides for a significantly improved security model, as one can, for example, utilize conferencing resources in the cloud that do not have to be trusted.  That said, there may be situations where the switching MDD needs to modify the RTP packet received from an endpoint, such as by adding or removing an RTP header extension, modifying the payload type value, etc.  It would be the responsibility of the switching MDD to ensure that media of the expected type and containing the correct information is received by a recipient.
+</t>
+<t>Thus, there is a need to utilize an end-to-end encryption and authentication key (or pair of keys) and a hop-by-hop encryption and authentication key (or pair of keys).  The end-to-end encryption and authentication key(s) is to ensure that media remains private to the trusted endpoints.  The hop-by-hop authentication key allows the switching MDD to authenticate RTP and RTCP packets and to optionally modify certain elements of those packet.  The hop-by-hop encryption key is to optionally encrypt RTP header extensions and optionally encrypt RTCP packets.  The current SRTP and related specifications do not define use of a dual-key (hop-by-hop and end-to-end) approach.  However, such an approach is possible and would result in ensuring the privacy of media while also enabling the more scalable switched conferencing model.
+</t>
+<t>This dual-key model does necessitate a change in the way that keys are managed.  However, the topic of key management is outside the scope of this requirements document.  High-level assumptions, such as if the end-to-end context uses a group key as SRTP master key or if individual SRTP master keys (that may be derived/negotiated from another group key), are likely to influence the solution derived from this document.
+</t>
+</section>
+</section>
+
+<section anchor="private-media-trust-model" title="Private Media Trust Model">
+<t>The architectural model suggested in this document enables switching MDDs to be hosted in domains in which the network elements may have low trust, or where the trustworthiness is uncertain.  This does not mean that the service provider is completely untrusted; it simply means that high enough trust with media decryption is not required.  This has the benefit of protecting the endpoint's media in the case of external attacks against the MDD.
+</t>
+<t>In this model, certain elements are considered trusted and others are considered untrusted, as shown in <xref target="fig-trustmodel"/>.  Trust in the context of this document means that the element can be in possession of the media encryption key(s) for a past, current, or potentially future conference (or portion thereof) used to protect media content.
+</t>
+<t>In the general case, only the endpoint and an associated key management function, which may be integrated with the endpoint or in a separate stand-alone entity, needs to be trusted.  However, it is recognized that in certain deployments, some elements that are classified as untrusted in this document might be placed into the trusted domain and thus be considered trusted.  One example might be a gateway, traditional media server or other MDD in a trusted environment connecting endpoints to the same private media conference.  This document does not preclude such deployment combinations, but does not rely on them in order to keep the examples and model definitions focused on the simple, most general case.
+</t>
+<t>Each of the elements discussed below has a direct or indirect relationship with each other.  The following diagram depicts the trust relationships described in the following sub-sections and the media or signaling interfaces that exist between them, showing the trusted elements on the left and untrusted elements on the right.  Note that this is a functional diagram and elements may be co-located or further divided into multiple separate physical entities.  Further, it is not necessary that every interface exist between all elements, such as both an interface from the endpoint and call processing function to a key management function, though both are possible options.
+</t>
+
+<figure anchor="fig-trustmodel" align="center" title="Relationship of Trusted and Untrusted Elements
+"><artwork align="center">
+                        |
+                        |
+   +----------+         |      +-----------------+
+   | Endpoint |         |      | Call Processing |
+   +----------+         |      +-----------------+
+                        |
+                        |
++----------------+      |      +-----------------+
+| Key Management |      |      | Switching Media |
+|    Function    |      |      |     Server      |
++----------------+      |      +-----------------+  
+                        |            
+     Trusted            |           Untrusted
+     Elements           |           Elements
+                        |
+                        |
+</artwork></figure>
+
+<section anchor="trusted-elements" title="Trusted Elements">
+<t>The endpoint is considered a trusted element, as it will be sourcing media flows transmitted to other endpoints and will be receiving media for rendering.  While it is possible for an endpoint to be compromised and perform in unexpected ways, such as transmitting a decrypted copy of media content to an adversary, such security issues and defenses are outside the scope of this document.
+</t>
+<t>The other trusted element is a key management function (KMF), which may be integrated with the endpoints or exist standalone.  This function is responsible for providing cryptographic keys to the endpoints for encrypting and authenticating media content.  The KMF is also responsible for providing cryptographic keys to the conferencing resources, such as the MDD, to enable authentication of media packets received by an endpoint.  Interaction between the KMF and untrusted call processing functions may be necessary to ensure endpoints are delivered the appropriate keys.  The KMF needs to be tightly controlled and managed to prevent exploitation by an adversary, as any kind of security compromise of the KMF puts the security of the conference at risk.
+</t>
+</section>
+
+<section anchor="untrusted-elements" title="Untrusted Elements">
+<t>The call processing function is responsible for such things as authenticating the user or endpoint for the purpose of joining a conference, signing messages, and processing call signaling messages.  This element is responsible for ensuring the integrity, and optionally the confidentiality, of call signaling messages between itself, the endpoint, and other network elements.  However, it is considered an untrusted element for the purposes of this document, as it cannot be trusted to have access to or be able to gain access to cryptographic key material that provides privacy and integrity of media packets.
+</t>
+<t>There might be several independent call processing functions within an enterprise, service provider network, or the Internet that are classified as untrusted.  Any signaling information that passes through these untrusted entities is subject to inspection by that element and might be altered by an adversary.
+</t>
+<t>Likewise, there may be certain deployment models where the call processing function is considered trusted.  In such cases, trusted call processing functions MUST take responsibility for ensuring the integrity of received messages before delivering those to the endpoint.  How signaling message integrity is ensured is outside the scope of this document, but might use such methods as defined in <xref target="RFC4474"/>.
+</t>
+<t>The final element is the switching MDD, which is responsible for forwarding encrypted media packets and conference control information to endpoints in the conference.  It is also responsible for conveying secured signaling between the endpoints and the key management function, acquiring per-hop authentication keys from the KMF, and performing per-hop authentication operations for media packets.  This function might also aggregate conference control information and initiate various conference control requests.  Forwarding of media packets requires that the switching MDD have access to RTP headers or header extensions and potentially modify those message elements, but the actual media content MUST not be decipherable by the switching MDD.
+</t>
+<t>Further, the switching MDD does not have the ability to determine whether an endpoint is authorized to have access to media encryption keys.  Merely joining a conference MUST NOT be interpreted as having authority.  Media encryption keys are conveyed to the endpoint by the KMF in such a way as to prevent the switching MDD from having access to those keys.
+</t>
+<t>It is assumed that an adversary might have access to the switching MDD and have the ability to read any of the contents that pass through.  For this reason, it is untrusted to have access to the media encryption keys.
+</t>
+<t>As with the call processing functions, it is appreciated that there may be some deployments wherein the switching MDD is trusted.  However, for the purposes of this document, the switching MDD is considered untrusted so that we can be ensure to develop a solution that will work even in the most hostile environments.
+</t>
+<t>It is expected that a switching MDD performs its role in properly forwarding media packets, taking measures to safeguard against replay attacks, etc.  If a MDD is exploited, an adversary may do such things as discard packets, replay packets, or introduce unacceptable delay in packet delivery.
+</t>
+</section>
+</section>
+
+<section anchor="goals-and-nongoals" title="Goals and Non-Goals">
+
+<section anchor="goals" title="Goals">
+
+<section anchor="ensure-endtoend-confidentiality" title="Ensure End-To-End Confidentiality">
+<t>The content of the communication and all media needs to be confidential within the group of entities explicitly invited into the conference.  An external monitoring adversary should not be able to deduce the human-to-human communication that actually occurred from capturing the media packets.
+</t>
+<t>At the same time, it is necessary to allow switching MDDs to manipulate certain RTP header fields like the payload type value.
+</t>
+</section>
+
+<section anchor="ensure-endtoend-source-authentication-of-media" title="Ensure End-To-End Source Authentication of Media">
+<t>In a conference system with multiple endpoints it is vital that the media content presented to any of the human participants is from the stated endpoint, and not an adversary that attempts to inject misleading content.  Nor should an adversary be able to fool the system into becoming a trusted party in the conference.  Only explicitly invited parties shall be able to contribute content.
+</t>
+</section>
+
+<section anchor="provide-a-more-efficient-service-than-fullmesh" title="Provide a More Efficient Service than &quot;Full-Mesh&quot;">
+<t>A multi-party conference that has the goals of confidentiality and source authentication can be established as a &quot;full-mesh&quot; (i.e., each participating endpoint directly addresses each of the other endpoints).  However, this has a significant issue with the amount of consumed resources in both the uplink and the downlink from each endpoint.
+</t>
+<t>A switched conferencing model would yield the efficiencies desired.
+</t>
+</section>
+
+<section anchor="support-cloudbased-conferencing" title="Support Cloud-Based Conferencing">
+<t>To achieve cost-effective and scalable conferencing, it must be possible to run the MDD instances in a cloud-based virtualized environment.
+</t>
+<t>From a security standpoint, this is a significant issue since the virtualized server instance and the underlying hardware and software upon which it runs might not be secure from an adversary.
+</t>
+</section>
+
+<section anchor="limiting-an-endpoints-access-to-content" title="Limiting an Endpoint's Access to Content">
+<t>Since an invited endpoint will be provided with the content protection keys, the endpoint can decrypt content from time periods before and after the endpoint joined the conference.  However, this is not always desirable.  It should be possible to re-key the content protection keys every time a participant joins or leaves the conference so each particular set of endpoints uses a unique key.
+</t>
+<t>This also changes the trust level required on the conference roster handling at any point and how to keep that accurate and secured.
+</t>
+<t>It should be noted that timely completion of the re-keying operations become an obstacle in system design and operation.  Thus, it is a goal to allow for this possibility when it is deemed essential, but it should not be a requirement on a system to re-key each time the participant list changes.
+</t>
+</section>
+
+<section anchor="compatibility-with-the-webrtc-security-architecture" title="Compatibility with the WebRTC Security Architecture">
+<t>It is a goal of this work to ensure compatibility with the WebRTC security architecture as described in <xref target="I-D.ietf-rtcweb-security-arch"/>.  As an example, local resources that are considered a part of the trusted computing base (TCB), such as keying material derived using DTLS-SRTP, will remain within the TCB and not exposed to untrusted entities.
+</t>
+<t>The browser is reliant on an external calling service to convey signaling information that may open the door for a man-in-the-middle attack, such as the conveyance of certificate fingerprints over the interface between the browser and the calling service.  However, as described in [I-D.ietf-rtcweb-security-arch], the browser may utilize additional services, such as a trusted identify provider, to mitigate such risks.
+</t>
+<t>Having said the foregoing, this document does not aim to define requirements for end-to-end security for the WebRTC data channel.
+</t>
+</section>
+</section>
+
+<section anchor="nongoals" title="Non-Goals">
+
+<section anchor="securing-the-endpoints" title="Securing the Endpoints">
+<t>The security of a communication session requires that the endpoints are not compromised and that the users are trustworthy.  If not, credentials and decrypted content may be shared with third parties.  However, this is hard to prevent through system design.  Thus, it should be assumed that the endpoint is secure and the user is trustworthy; how to achieve this is out of scope this document.
+</t>
+</section>
+
+<section anchor="concealing-that-communication-occurs" title="Concealing that Communication Occurs">
+<t>A non-goal is to attempt to prevent a pervasive monitoring adversary from knowing that the communication session has occurred.  The reason for excluding this as a goal is that it is extremely difficult to achieve, as a pervasive monitoring adversary can be expected to be able to have knowledge of all IP flows that enter or exit local ISPs, across links that straddle national borders or internet exchange points.  To hide the fact communication occurred, the flows required to achieve the communication session need to be highly difficult to correlate between different legs of the communication.
+</t>
+<t>At this stage this is deemed too difficult to attempt and will need to be a subject for further study.  Existing attempts include The Onion Router (TOR), against which it has been claimed to be possible to monitor, at least partially, by an adversary with sufficient reach.
+</t>
+<t>Also of consideration is that trying to conceal the fact that communication occurred actually makes it more difficult for network administrators to effectively manage and troubleshoot issues with conference calls.
+</t>
+</section>
+
+<section anchor="individual-media-source-authentication" title="Individual Media Source Authentication">
+<t>Although the endpoints in the conference are authenticated, it is not a goal to provide source authentication of the media at the individual user level, instead being satisfied with being able to authenticate media as coming from an invited endpoint or not.
+</t>
+<t>There exist solutions that can provide individual media source authentication (e.g., TESLA).  However, they impact the performance or security properties they provide.  Thus, further study is required to determine impact and resulting security properties if desired to have individual source authentication.
+</t>
+</section>
+
+<section anchor="multicast-based-conferencing" title="Multicast -based Conferencing">
+<t>Using multicast to construct a non-centralized media distribution model is out of scope.  This document is focused only on models where endpoints, or other devices, participating in a conference unicast media to a centrally located media distribution device.
+</t>
+</section>
+</section>
+</section>
+
+<section anchor="requirements" title="Requirements">
+<t>The following are the security solution requirements for switched conferencing that enable end-to-end media privacy between all endpoints.
+</t>
+<t>Note that while some switching MDDs might be fully trusted entities, the intent of this solution and purpose for these requirements is to address those servers that are not trusted.
+</t>
+<t>
+<list style="numbers">
+<t>Switching media distribution device MUST be able to switch the media between endpoints in a conference without having access to unencrypted media content.</t>
+<t>Solution MUST maintain all current SRTP security goals, namely the ability to provide for end-to-end confidentiality, provide for hop-by-hop replay protection, and ensure hop-by-hop and end-to-end message integrity.</t>
+<t>Solution MUST extend replay protection to cover each hop in the media path, both ensuring that any received packet is destined for the recipient and not a duplicate.</t>
+<t>Keys used for end-to-end encryption and authentication of RTP payloads and other information deemed unsuitable for access by the switching media distribution device MUST NOT be generated by or accessible to any component that is not trusted.</t>
+<t>The switching media distribution device MUST be allowed to make changes to the RTP header and the RTP header extensions.</t>
+<t>A cryptographic context suitable for enabling end-to-end authenticated encryption MUST be defined.</t>
+<t>The switching media distribution device, or any entity that is not fully trusted, MUST NOT be involved in the user or endpoint authentication for the purpose of media key distribution.</t>
+<t>The switching media distribution device MUST be able to switch an already active RTP stream to a new receiver, while guaranteeing the timely synchronization between the RTP security context of the transmitter and its current and new receivers.</t>
+<t>It MUST be possible for the switching media distribution device to determine if a received media packet was transmitted by an endpoint in possession of a valid hop-by-hop key for that conference.</t>
+<t>It MUST be possible for a conference to be optionally re-keyed as desired, such as each time a participant joins or leaves the conference.</t>
+<t>Any solution satisfying this requirements document MUST provide for a means through which WebRTC-compliant endpoints can participate in a switched conference using private media as outlined herein.</t>
+<t>All RTP senders, including the switching media distribution device, MUST adhere to all congestion control requirements that are required by the RTP profile and topology in use, including RTP circuit breakers <xref target="I-D.ietf-avtcore-rtp-circuit-breakers"/>.  Since the switching media distribution device is unable to perform transcoding or transrating that requires access to the unencrypted media, its reaction to congestion signals is often limited to dropping packets that would otherwise be forwarded in the absence of congestion, and signaling congestion to the RTP source.  This is similar to the congestion control behavior of the Media Switching Mixer and Selective Forwarding Middlebox/Unit in <xref target="I-D.ietf-avtcore-rtp-topologies-update"/>.</t>
+<t>It MUST be possible for a media distribution device or an endpoint to authenticate a received RTCP packet.</t>
+</list>
+</t>
+</section>
+
+<section anchor="iana-considerations" title="IANA Considerations">
+<t>There are no IANA considerations for this document.
+</t>
+</section>
+
+<section anchor="security-considerations" title="Security Considerations">
+<t>[TBD]
+</t>
+</section>
+
+</middle>
+<back>
+<references title="Normative References">
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-avtcore-rtp-circuit-breakers.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-avtcore-rtp-topologies-update.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-rtcweb-security-arch.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.3711.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6464.xml"?>
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6904.xml"?>
+</references>
+<references title="Informative References">
+<?rfc include="http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4474.xml"?>
+</references>
+
+</back>
+</rfc>
