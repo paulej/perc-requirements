@@ -110,7 +110,7 @@ This document is focused on ensuring the privacy of RTP media in centralized MDD
 
 # Requirements Language
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119 [@!RFC2119] when they appear in ALL CAPS.  These words may also appear in this document in lower case as plain English words, absent their normative meanings.
+The key words "**MUST**", "**MUST NOT**", "**REQUIRED**", "**SHALL**", "**SHALL NOT**", "**SHOULD**", "**SHOULD NOT**", "**RECOMMENDED**", "**MAY**", and "**OPTIONAL**" in this document are to be interpreted as described in RFC 2119 [@!RFC2119] when they appear in ALL CAPS.  These words may also appear in this document in lower case as plain English words, absent their normative meanings.
 
 # Terminology
 
@@ -152,7 +152,7 @@ There is a trend in the industry for enterprises to use cloud services to host m
 
 The increased use of cloud services has exposed a problem.  There are two different trust domains from a media perspective: endpoints and other devices in a trusted domain, and MDDs controlled by the cloud service in an untrusted domain.  Other examples of conference devices spread across trusted and untrusted domains are likely, but the cloud service trend is triggering the urgency to address the need to allow for lightweight media conference while enabling media privacy at the same time.
 
-With a switching MDD, each endpoint transmits media as it would with a traditional media server.  However, the switching MDD merely forwards all or a subset of the media to the other endpoints in the conference (where at least one other endpoint may be associated with a cascaded media distribution device), leaving composition to the receiving endpoint.  It is also worth noting that, for a switching MDD model to work successfully, each endpoint in the conference must support the media formats transmitted by all other endpoints in the conference.  More modern endpoints support multiple codecs and formats, making this commercially practical.
+With a switching MDD, each endpoint transmits media as it would with a traditional media server.  However, the switching MDD merely forwards all or a subset of the media to the other endpoints in the conference (where at least one other endpoint may be associated with a cascaded media distribution device), leaving composition to the receiving endpoint.  It is also worth noting that, for a switching MDD model to work successfully, each endpoint in the conference **MUST** support the media formats transmitted by all other endpoints in the conference.  More modern endpoints support multiple codecs and formats, making this commercially practical.
 
 (#fig-smdd) depicts an example of a switching MDD wherein each endpoint is receiving the media flows transmitted by each of the other endpoints in the conference.
 
@@ -275,11 +275,11 @@ The call processing function is responsible for such things as authenticating th
 
 There might be several independent call processing functions within an enterprise, service provider network, or the Internet that are classified as untrusted.  Any signaling information that passes through these untrusted entities is subject to inspection by that element and might be altered by an adversary.
 
-Likewise, there may be certain deployment models where the call processing function is considered trusted.  In such cases, trusted call processing functions MUST take responsibility for ensuring the integrity of received messages before delivering those to the endpoint.  How signaling message integrity is ensured is outside the scope of this document, but might use such methods as defined in [@RFC4474].
+Likewise, there may be certain deployment models where the call processing function is considered trusted.  In such cases, trusted call processing functions **MUST** take responsibility for ensuring the integrity of received messages before delivering those to the endpoint.  How signaling message integrity is ensured is outside the scope of this document, but might use such methods as defined in [@RFC4474].
 
-The final element is the switching MDD, which is responsible for forwarding encrypted media packets and conference control information to endpoints in the conference.  It is also responsible for conveying secured signaling between the endpoints and the key management function, acquiring per-hop authentication keys from the KMF, and performing per-hop authentication operations for media packets.  This function might also aggregate conference control information and initiate various conference control requests.  Forwarding of media packets requires that the switching MDD have access to RTP headers or header extensions and potentially modify those message elements, but the actual media content MUST not be decipherable by the switching MDD.
+The final element is the switching MDD, which is responsible for forwarding encrypted media packets and conference control information to endpoints in the conference.  It is also responsible for conveying secured signaling between the endpoints and the key management function, acquiring per-hop authentication keys from the KMF, and performing per-hop authentication operations for media packets.  This function might also aggregate conference control information and initiate various conference control requests.  Forwarding of media packets requires that the switching MDD have access to RTP headers or header extensions and potentially modify those message elements, but the actual media content **MUST** not be decipherable by the switching MDD.
 
-Further, the switching MDD does not have the ability to determine whether an endpoint is authorized to have access to media encryption keys.  Merely joining a conference MUST NOT be interpreted as having authority.  Media encryption keys are conveyed to the endpoint by the KMF in such a way as to prevent the switching MDD from having access to those keys.
+Further, the switching MDD does not have the ability to determine whether an endpoint is authorized to have access to media encryption keys.  Merely joining a conference **MUST NOT** be interpreted as having authority.  Media encryption keys are conveyed to the endpoint by the KMF in such a way as to prevent the switching MDD from having access to those keys.
 
 It is assumed that an adversary might have access to the switching MDD and have the ability to read any of the contents that pass through.  For this reason, it is untrusted to have access to the media encryption keys.
 
@@ -359,31 +359,31 @@ The following are the security solution requirements for switched conferencing t
 
 Note that while some switching MDDs might be fully trusted entities, the intent of this solution and purpose for these requirements is to address those servers that are not trusted.
 
-1) Switching media distribution device MUST be able to switch the media between endpoints in a conference without having access to unencrypted media content.
+1) Switching media distribution device **MUST** be able to switch the media between endpoints in a conference without having access to unencrypted media content.
 
-2) Solution MUST maintain all current SRTP security goals, namely the ability to provide for end-to-end confidentiality, provide for hop-by-hop replay protection, and ensure hop-by-hop and end-to-end message integrity.
+2) Solution **MUST** maintain all current SRTP security goals, namely the ability to provide for end-to-end confidentiality, provide for hop-by-hop replay protection, and ensure hop-by-hop and end-to-end message integrity.
 
-3) Solution MUST extend replay protection to cover each hop in the media path, both ensuring that any received packet is destined for the recipient and not a duplicate.
+3) Solution **MUST** extend replay protection to cover each hop in the media path, both ensuring that any received packet is destined for the recipient and not a duplicate.
 
-4) Keys used for end-to-end encryption and authentication of RTP payloads and other information deemed unsuitable for access by the switching media distribution device MUST NOT be generated by or accessible to any component that is not trusted.
+4) Keys used for end-to-end encryption and authentication of RTP payloads and other information deemed unsuitable for access by the switching media distribution device **MUST NOT** be generated by or accessible to any component that is not trusted.
 
-5) The switching media distribution device MUST be allowed to make changes to the RTP header and the RTP header extensions.
+5) The switching media distribution device **MUST** be allowed to make changes to the RTP header and the RTP header extensions.
 
-6) A cryptographic context suitable for enabling end-to-end authenticated encryption MUST be defined.
+6) A cryptographic context suitable for enabling end-to-end authenticated encryption **MUST** be defined.
 
-7) The switching media distribution device, or any entity that is not fully trusted, MUST NOT be involved in the user or endpoint authentication for the purpose of media key distribution.
+7) The switching media distribution device, or any entity that is not fully trusted, **MUST NOT** be involved in the user or endpoint authentication for the purpose of media key distribution.
 
-8) The switching media distribution device MUST be able to switch an already active RTP stream to a new receiver, while guaranteeing the timely synchronization between the RTP security context of the transmitter and its current and new receivers.
+8) The switching media distribution device **MUST** be able to switch an already active RTP stream to a new receiver, while guaranteeing the timely synchronization between the RTP security context of the transmitter and its current and new receivers.
 
-9) It MUST be possible for the switching media distribution device to determine if a received media packet was transmitted by an endpoint in possession of a valid hop-by-hop key for that conference.
+9) It **MUST** be possible for the switching media distribution device to determine if a received media packet was transmitted by an endpoint in possession of a valid hop-by-hop key for that conference.
 
-10) It MUST be possible for a conference to be optionally re-keyed as desired, such as each time a participant joins or leaves the conference.
+10) It **MUST** be possible for a conference to be optionally re-keyed as desired, such as each time a participant joins or leaves the conference.
 
-11) Any solution satisfying this requirements document MUST provide for a means through which WebRTC-compliant endpoints can participate in a switched conference using private media as outlined herein.
+11) Any solution satisfying this requirements document **MUST** provide for a means through which WebRTC-compliant endpoints can participate in a switched conference using private media as outlined herein.
 
-12) All RTP senders, including the switching media distribution device, MUST adhere to all congestion control requirements that are required by the RTP profile and topology in use, including RTP circuit breakers [@!I-D.ietf-avtcore-rtp-circuit-breakers].  Since the switching media distribution device is unable to perform transcoding or transrating that requires access to the unencrypted media, its reaction to congestion signals is often limited to dropping packets that would otherwise be forwarded in the absence of congestion, and signaling congestion to the RTP source.  This is similar to the congestion control behavior of the Media Switching Mixer and Selective Forwarding Middlebox/Unit in [@!I-D.ietf-avtcore-rtp-topologies-update].
+12) All RTP senders, including the switching media distribution device, **MUST** adhere to all congestion control requirements that are required by the RTP profile and topology in use, including RTP circuit breakers [@!I-D.ietf-avtcore-rtp-circuit-breakers].  Since the switching media distribution device is unable to perform transcoding or transrating that requires access to the unencrypted media, its reaction to congestion signals is often limited to dropping packets that would otherwise be forwarded in the absence of congestion, and signaling congestion to the RTP source.  This is similar to the congestion control behavior of the Media Switching Mixer and Selective Forwarding Middlebox/Unit in [@!I-D.ietf-avtcore-rtp-topologies-update].
 
-13) It MUST be possible for a media distribution device or an endpoint to authenticate a received RTCP packet.
+13) It **MUST** be possible for a media distribution device or an endpoint to authenticate a received RTCP packet.
 
 # IANA Considerations
 

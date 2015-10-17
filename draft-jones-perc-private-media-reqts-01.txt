@@ -309,7 +309,7 @@ Internet-Draft              PERC Requirements               October 2015
    conference (where at least one other endpoint may be associated with
    a cascaded media distribution device), leaving composition to the
    receiving endpoint.  It is also worth noting that, for a switching
-   MDD model to work successfully, each endpoint in the conference must
+   MDD model to work successfully, each endpoint in the conference MUST
    support the media formats transmitted by all other endpoints in the
    conference.  More modern endpoints support multiple codecs and
    formats, making this commercially practical.
