@@ -1,94 +1,104 @@
-%#
-%# PERC Requirements Document
-%# Generation tool: mmark (https://github.com/miekg/mmark)
-%#
-% Title = "Private Media Requirements in Privacy Enhanced RTP Conferencing"
-% abbrev = "PERC Requirements"
-% category = "info"
-% docName = "draft-jones-perc-private-media-reqts-01"
-% ipr= "trust200902"
-% area = "Internet"
-% workgroup = ""
-% keyword = ["PERC", "RTP", "privacy", "conferencing"]
-%
-% [[author]]
-% initials="P."
-% surname="Jones"
-% fullname="Paul Jones"
-% organization = "Cisco"
-%   [author.address]
-%   email = "paulej@packetizer.com"
-%   phone = "+1 919 476 2048"
-%   [author.address.postal]
-%   street = "7025 Kit Creek Rd."
-%   city = "Research Trianle Park"
-%   region = "North Carolina"
-%   code = "27709"
-%   country = "USA"
-% [[author]]
-% initials="N."
-% surname="Ismail"
-% fullname="Nermeen Ismail"
-% organization = "Cisco"
-%   [author.address]
-%   email = "nermeen@cisco.com"
-%   [author.address.postal]
-%   street = "170 W Tasman Dr."
-%   city = "San Jose"
-%   region = "California"
-%   code = "95134"
-%   country = "USA"
-% [[author]]
-% initials="D."
-% surname="Benham"
-% fullname="David Benham"
-% organization = "Cisco"
-%   [author.address]
-%   email = "dbenham@cisco.com"
-%   [author.address.postal]
-%   street = "170 W Tasman Dr."
-%   city = "San Jose"
-%   region = "California"
-%   code = "95134"
-%   country = "USA"
-% [[author]]
-% initials="N."
-% surname="Buckles"
-% fullname="Nathan Buckles"
-% organization = "Cisco"
-%   [author.address]
-%   email = "nbuckles@cisco.com"
-%   [author.address.postal]
-%   street = "170 W Tasman Dr."
-%   city = "San Jose"
-%   region = "California"
-%   code = "95134"
-%   country = "USA"
-% [[author]]
-% initials="J."
-% surname="Mattsson"
-% fullname="John Mattsson"
-% organization = "Ericsson AB"
-%   [author.address]
-%   email = "john.mattsson@ericsson.com"
-%   phone = "+46 10 71 43 501"
-%   [author.address.postal]
-%   street = "SE-164 80"
-%   city = "Stockholm"
-%   country = "Sweeden"
-% [[author]]
-% initials="R."
-% surname="Barnes"
-% fullname="Richard Barnes"
-% organization = "Mozilla"
-%   [author.address]
-%   email = "rlb@ipv.sx"
-%   [author.address.postal]
-%   street = "331 E Evelyn Ave."
-%   city = "Mountain View"
-%   region = "California"
-%   code = "94041"
-%   country = "USA"
+%%%
+
+    #
+    # PERC Requirements Document
+    # Generation tool: mmark (https://github.com/miekg/mmark)
+    #
+
+    Title = "Private Media Requirements in Privacy Enhanced RTP Conferencing"
+    abbrev = "PERC Requirements"
+    category = "info"
+    docName = "draft-jones-perc-private-media-reqts-01"
+    ipr= "trust200902"
+    area = "Internet"
+    workgroup = ""
+    keyword = ["PERC", "RTP", "privacy", "conferencing"]
+
+    [[author]]
+    initials="P."
+    surname="Jones"
+    fullname="Paul Jones"
+    organization = "Cisco"
+      [author.address]
+      email = "paulej@packetizer.com"
+      phone = "+1 919 476 2048"
+      [author.address.postal]
+      street = "7025 Kit Creek Rd."
+      city = "Research Trianle Park"
+      region = "North Carolina"
+      code = "27709"
+      country = "USA"
+
+    [[author]]
+    initials="N."
+    surname="Ismail"
+    fullname="Nermeen Ismail"
+    organization = "Cisco"
+      [author.address]
+      email = "nermeen@cisco.com"
+      [author.address.postal]
+      street = "170 W Tasman Dr."
+      city = "San Jose"
+      region = "California"
+      code = "95134"
+      country = "USA"
+
+    [[author]]
+    initials="D."
+    surname="Benham"
+    fullname="David Benham"
+    organization = "Cisco"
+      [author.address]
+      email = "dbenham@cisco.com"
+      [author.address.postal]
+      street = "170 W Tasman Dr."
+      city = "San Jose"
+      region = "California"
+      code = "95134"
+      country = "USA"
+
+    [[author]]
+    initials="N."
+    surname="Buckles"
+    fullname="Nathan Buckles"
+    organization = "Cisco"
+      [author.address]
+      email = "nbuckles@cisco.com"
+      [author.address.postal]
+      street = "170 W Tasman Dr."
+      city = "San Jose"
+      region = "California"
+      code = "95134"
+      country = "USA"
+
+    [[author]]
+    initials="J."
+    surname="Mattsson"
+    fullname="John Mattsson"
+    organization = "Ericsson AB"
+      [author.address]
+      email = "john.mattsson@ericsson.com"
+      phone = "+46 10 71 43 501"
+      [author.address.postal]
+      street = "SE-164 80"
+      city = "Stockholm"
+      country = "Sweeden"
+
+    [[author]]
+    initials="R."
+    surname="Barnes"
+    fullname="Richard Barnes"
+    organization = "Mozilla"
+      [author.address]
+      email = "rlb@ipv.sx"
+      [author.address.postal]
+      street = "331 E Evelyn Ave."
+      city = "Mountain View"
+      region = "California"
+      code = "94041"
+      country = "USA"
+
+%%%
 
 .# Abstract
 
